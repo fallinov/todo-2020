@@ -1,26 +1,26 @@
-# ToDo App (todo-2020)
+# Exercice ToDo 2020
 
-The best todo app
+###Cours B072 2020 de l'[ESIG](http://www.esig-jura.ch/fr-esig/L-ecole/Qui-sommes-nous/Ecole-Superieure-d-Informatique-de-Gestion.html)
 
-## Install the dependencies
+Support de cours : https://divtec.gitbook.io/quasar/
+
+
+## Installer les librairies
 ```bash
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Démarrer l'application
 ```bash
 quasar dev
 ```
 
-### Lint the files
+### Inspecter les erreurs de qualité du code : Lint
 ```bash
 npm run lint
 ```
 
-### Build the app for production
+### Créer la version de production
 ```bash
 quasar build
 ```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
