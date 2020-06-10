@@ -7,10 +7,20 @@
         </q-toolbar-title>
 
         <q-btn
+          v-if="!user"
           to="/connexion"
           flat
           icon-right="account_circle"
           label="Se connecter"
+          class="absolute-right"
+        />
+
+        <q-btn
+          v-else
+          @click="deconnecterUtilisateur"
+          flat
+          icon-right="account_circle"
+          label="Se déconnecter"
           class="absolute-right"
         />
       </q-toolbar>
@@ -68,10 +78,9 @@
 </template>
 
 <script>
-
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'MainLayout',
-
   data () {
     return {
       leftDrawerOpen: false,
@@ -90,6 +99,12 @@ export default {
         }
       ]
     }
+  },
+  computed: {
+    ...mapState('auth', ['user'])
+  },
+  methods: {
+    ...mapActions('auth', ['deconnecterUtilisateur'])
   }
 }
 </script>

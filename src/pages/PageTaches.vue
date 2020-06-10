@@ -1,7 +1,18 @@
 <template>
   <q-page padding>
+
+    <div
+      v-if="!tachesChargees"
+      class="q-pa-lg text-center"
+    >
+      <q-spinner-radio
+        color="primary"
+        size="4em"
+      />
+    </div>
+
     <q-list
-      v-if="taches.length"
+      v-if="taches.length && tachesChargees"
       bordered
       separator
     >
@@ -36,7 +47,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'PageTaches',
@@ -46,7 +57,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('taches', ['taches'])
+    ...mapGetters('taches', ['taches']),
+    ...mapState('taches', ['tachesChargees'])
   },
   components: {
     tache: require('components/Taches/Tache').default,

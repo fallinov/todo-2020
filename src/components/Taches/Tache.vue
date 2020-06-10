@@ -3,7 +3,7 @@
     @click="modifierTache({
       id: tache.id,
       updates: {
-        terminee: !tache.terminee
+        terminee: tache.terminee === 0 ? 1 : 0
       }
     })"
     clickable
@@ -12,7 +12,7 @@
   >
     <q-item-section side>
       <q-checkbox
-        :value="tache.terminee"
+        :value="!!tache.terminee"
         class="no-pointer-events"
       />
     </q-item-section>

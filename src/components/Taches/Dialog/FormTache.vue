@@ -25,7 +25,8 @@
         <q-input
           class="q-mt-sm"
           outlined
-          v-model="tache.dateFin"
+          readonly
+          :value="dateFinLocale"
           label="Date"
           clearable
         >
@@ -34,7 +35,7 @@
               <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                 <q-date
                   v-model="tache.dateFin"
-                  mask="D.M.YYYY"
+                  mask="YYYY-MM-DD"
                   @input="() => $refs.qDateProxy.hide()" />
               </q-popup-proxy>
             </q-icon>
@@ -87,6 +88,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { date } from 'quasar'
 
 export default {
   name: 'FormTache',
@@ -105,9 +107,15 @@ export default {
         nom: '',
         dateFin: '',
         heureFin: '',
-        terminee: false
+        terminee: 0
       },
       heureTemp: ''
+    }
+  },
+  computed: {
+    dateFinLocale () {
+      const dateLocale = new Date(this.tache.dateFin)
+      return date.formatDate(dateLocale, 'DD.MM.YY')
     }
   },
   methods: {

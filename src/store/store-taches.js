@@ -1,7 +1,10 @@
 // State : données du magasin
+import { api } from 'boot/axios'
+import { afficherMessageErreur } from 'src/functions/message-erreur'
+
 const state = {
   taches: [
-    {
+    /* {
       id: 1,
       nom: 'Acheter des oranges',
       terminee: false,
@@ -21,8 +24,9 @@ const state = {
       terminee: false,
       dateFin: '16.06.2020',
       heureFin: '14:00'
-    }
-  ]
+    } */
+  ],
+  tachesChargees: false
 }
 
 /*
@@ -45,6 +49,13 @@ const mutations = {
   ajouterTache (state, tache) {
     // Ajout de la tâche à fin du tableau
     state.taches.push(tache)
+  },
+  // Remplace le tableau des tâches
+  setTaches (state, taches) {
+    state.taches = taches
+  },
+  setTachesChargees (state, valeur) {
+    state.tachesChargees = valeur
   }
 }
 /*
@@ -69,6 +80,26 @@ const actions = {
     tache.id = uId
     // Commite l'ajout
     commit('ajouterTache', tache)
+  },
+  getTachesApi ({ commit, rootState }) {
+    commit('setTachesChargees', false)
+    const config = {
+      // Header avec Token
+      headers: { Authorization: 'Bearer ' + rootState.auth.token }
+    }
+    api.get('/taches', config)
+      .then(function (response) {
+        commit('setTaches', response.data)
+        commit('setTachesChargees', true)
+      })
+      .catch(function (error) {
+        afficherMessageErreur('Récupération des tâches impossible !')
+        throw error
+      })
+  },
+  viderTaches ({ commit }) {
+    commit('setTaches', [])
+    commit('setTachesChargees', false)
   }
 }
 
