@@ -1,31 +1,10 @@
 // State : données du magasin
 import { api } from 'boot/axios'
 import { afficherMessageErreur } from 'src/functions/message-erreur'
+import { Loading } from 'quasar'
 
 const state = {
-  taches: [
-    /* {
-      id: 1,
-      nom: 'Acheter des oranges',
-      terminee: false,
-      dateFin: '06.06.2020',
-      heureFin: '12:00'
-    },
-    {
-      id: 2,
-      nom: 'Manger des oranges',
-      terminee: false,
-      dateFin: '15.06.2020',
-      heureFin: '22:00'
-    },
-    {
-      id: 3,
-      nom: 'Digérer des oranges',
-      terminee: false,
-      dateFin: '16.06.2020',
-      heureFin: '14:00'
-    } */
-  ],
+  taches: [],
   tachesChargees: false
 }
 
@@ -63,23 +42,67 @@ Actions : méthodes du magasin qui font appel aux mutations
 Elles peuvent être asynchrones !
  */
 const actions = {
-  modifierTache ({ commit }, payload) {
-    commit('modifierTache', payload)
-  },
-  supprimerTache ({ commit }, id) {
-    commit('supprimerTache', id)
-  },
-  ajouterTache ({ commit }, tache) {
-    let uId = 1
-    // Si le tableau contient des éléments
-    if (state.taches.length) {
-      // Récupère l'id MAX et lui ajoute 1
-      uId = Math.max(...state.taches.map(tache => tache.id)) + 1
+  modifierTache ({ commit, rootState }, payload) {
+    Loading.show()
+    // Configuration du header avec token
+    const config = {
+      headers: { Authorization: 'Bearer ' + rootState.auth.token }
     }
-    // Ajoute le nouvel id à la tache
-    tache.id = uId
-    // Commite l'ajout
-    commit('ajouterTache', tache)
+    // API : PUT /taches
+    api.put('/taches/' + payload.id, payload.updates, config)
+      .then(function (response) {
+        // Affecte au payload les données retrounée par l'API
+        payload.updates = response.data
+        commit('modifierTache', payload)
+      })
+      .catch(function (error) {
+        afficherMessageErreur(
+          'Modification de tâche impossible !',
+          Object.values(error.response.data)
+        )
+        throw error
+      })
+      .finally(Loading.hide())
+  },
+  supprimerTache ({ commit, rootState }, id) {
+    Loading.show()
+    // Configuration du header avec token
+    const config = {
+      headers: { Authorization: 'Bearer ' + rootState.auth.token }
+    }
+
+    api.delete('/taches/' + id, config)
+      .then(function () {
+        commit('supprimerTache', id)
+      })
+      .catch(function (error) {
+        afficherMessageErreur(
+          'Supression de la tâche impossible !',
+          Object.values(error.response.data)
+        )
+        throw error
+      })
+      .finally(Loading.hide())
+  },
+  ajouterTache ({ commit, rootState }, tache) {
+    Loading.show()
+    const config = {
+      // Header avec Token
+      headers: { Authorization: 'Bearer ' + rootState.auth.token }
+    }
+    api.post('/taches', tache, config)
+      .then(function (response) {
+        // Commite l'ajout
+        commit('ajouterTache', response.data)
+      })
+      .catch(function (error) {
+        afficherMessageErreur(
+          'Création tâche impossible !',
+          Object.values(error.response.data)
+        )
+        throw error
+      })
+      .finally(Loading.hide())
   },
   getTachesApi ({ commit, rootState }) {
     commit('setTachesChargees', false)
